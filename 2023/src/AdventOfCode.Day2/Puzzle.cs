@@ -1,7 +1,7 @@
 ﻿using AdventOfCode.Common;
 using AdventOfCode.Common.InputReader;
 
-namespace AdventOfCode.Day1;
+namespace AdventOfCode.Day2;
 
 internal sealed class Puzzle : IPuzzle
 {
@@ -20,14 +20,12 @@ internal sealed class Puzzle : IPuzzle
 
     public void Solve()
     {
-        var lines = _reader.GetInputFrom(Days.Day1);
+        var lines = _reader.GetInputFrom(Days.Day2);
 
-        var sum1 = _part1.Calculate(lines); // 55208
-        var sum2 = _part2.Calculate(lines); // 54578
+        var sum1 = _part1.Calculate(lines);
+        var sum2 = _part2.Calculate(lines);
 
-        // Display the sum of calibration values from part 1 to the console
-        _writer.WriteLine($"Sum of calibration values: {sum1}");
-        // Display the sum of calibration values from part 2 to the console
-        _writer.WriteLine($"Sum of calibration values: {sum2}");
+        _writer.WriteLine($"Sum of the power of games: {sum1}"); // 2377
+        _writer.WriteLine($"Sum of the power of games: {sum2}"); // 71220
     }
 }

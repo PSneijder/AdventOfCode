@@ -3,7 +3,7 @@
 /// <summary>
 ///     Interface representing a stream writer in the Advent of Code challenge
 /// </summary>
-public interface IStreamWriter
+public interface IStreamWriter : IDisposable
 {
     /// <summary>
     ///     Method signature for writing a line

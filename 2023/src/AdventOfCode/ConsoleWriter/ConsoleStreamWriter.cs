@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.ConsoleWriter;
 
-internal sealed class ConsoleStreamWriter : IStreamWriter, IDisposable
+internal sealed class ConsoleStreamWriter : IStreamWriter
 {
     private readonly StreamWriter _writer;
     private bool _disposed;
@@ -15,16 +15,19 @@ internal sealed class ConsoleStreamWriter : IStreamWriter, IDisposable
         };
     }
 
+    /// <summary>
+    ///     Implementation of Dispose method to properly dispose resources
+    /// </summary>
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        Dispose(true); // Call Dispose method with parameter 'true' to release managed resources
+        GC.SuppressFinalize(this); // Suppress finalization to avoid redundant cleanup
     }
 
     /// <summary>
-    ///     Writes the line.
+    ///     Writes a string value to the writer
     /// </summary>
-    /// <param name="value">The value.</param>
+    /// <param name="value">The string value to be written</param>
     public void WriteLine(string value)
     {
         _writer.WriteLine(value);
@@ -44,7 +47,6 @@ internal sealed class ConsoleStreamWriter : IStreamWriter, IDisposable
             _writer.Dispose();
 
         // Dispose unmanaged resources (if any)
-
         _disposed = true;
     }
 }
