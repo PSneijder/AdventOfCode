@@ -1,6 +1,6 @@
 ﻿using AdventOfCode.Common;
 using AdventOfCode.Common.Extensions;
-using AdventOfCode.Day2.Extensions;
+using AdventOfCode.Day3.Extensions;
 using AdventOfCode.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +13,7 @@ internal class Program
         // Build the service provider
         using var serviceProvider = CreateServiceProvider();
 
-        // Resolve and use the puzzle service
+        // Resolve and use the writer service
         using var writer = serviceProvider.GetRequiredService<IStreamWriter>();
 
         // Resolve and use the puzzle service
@@ -36,10 +36,11 @@ internal class Program
         var services = new ServiceCollection();
 
         // Register services
-        services.UsePuzzleInputReader();
         services.UseConsoleWriter();
+        services.UsePuzzleInputReader();
         // services.UsePuzzleFromDay1();
-        services.UsePuzzleFromDay2();
+        // services.UsePuzzleFromDay2();
+        services.UsePuzzleFromDay3();
 
         var serviceProvider = services.BuildServiceProvider();
 

@@ -16,6 +16,8 @@ internal sealed class PuzzleInputReader : IInputReader
         var basePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\..\"));
         var filePath = Path.Combine(basePath, $@"res\{day}\{day}.txt");
 
+        if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
         var lines = File.ReadAllLines(filePath);
 
         return lines;
