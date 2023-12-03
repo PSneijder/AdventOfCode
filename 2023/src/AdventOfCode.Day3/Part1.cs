@@ -18,14 +18,14 @@ internal sealed class Part1
     private int CalculatePartSum(string[] lines)
     {
         var symbols = lines.ToPart(new Regex(@"[^.0-9]"));
-        var nums = lines.ToPart(new Regex(@"\d+"));
+        var numbers = lines.ToPart(new Regex(@"\d+"));
 
         var sum = 0;
 
         // Iterate through each number and check if adjacent to any symbol
-        foreach (var num in nums)
-            if (symbols.Any(part => Adjacent(part, num)))
-                sum += num.Int; // Add the number to sum if adjacent to a symbol
+        foreach (var number in numbers)
+            if (symbols.Any(part => Adjacent(part, number)))
+                sum += number.Int; // Add the number to sum if adjacent to a symbol
 
         return sum;
     }
