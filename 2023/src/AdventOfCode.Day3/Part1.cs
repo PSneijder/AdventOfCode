@@ -24,24 +24,9 @@ internal sealed class Part1
 
         // Iterate through each number and check if adjacent to any symbol
         foreach (var number in numbers)
-            if (symbols.Any(part => Adjacent(part, number)))
+            if (symbols.Any(part => part.IsAdjacent(number)))
                 sum += number.Int; // Add the number to sum if adjacent to a symbol
 
         return sum;
-    }
-
-    /// <summary>
-    ///     Method to check if two parts are adjacent
-    /// </summary>
-    /// <param name="p1">The p1.</param>
-    /// <param name="p2">The p2.</param>
-    /// <returns></returns>
-    private bool Adjacent(Part p1, Part p2)
-    {
-        var isAdjacent = Math.Abs(p2.Row - p1.Row) <= 1
-                         && p1.Col <= p2.Col + p2.Text.Length
-                         && p2.Col <= p1.Col + p1.Text.Length;
-
-        return isAdjacent; // Return whether two parts are adjacent
     }
 }
