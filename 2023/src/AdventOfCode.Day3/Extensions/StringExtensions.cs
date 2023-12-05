@@ -15,7 +15,7 @@ internal static class StringExtensions
         var list = new List<Part>();
 
         // Loop through each row (line) in the input array
-        foreach (int row in Enumerable.Range(0, lines.Length))
+        foreach (var row in Enumerable.Range(0, lines.Length))
             // For each match found in the current row using the provided regex pattern
         foreach (Match match in regex.Matches(lines[row]))
             // Create a new Part object and add it to the list
