@@ -4,88 +4,90 @@ namespace AdventOfCode.Day5;
 
 internal sealed class Part2
 {
-    public double Calculate(string[] lines)
+    public long Calculate(string[] lines)
     {
         var seeds = lines[0].GetSeeds();
-        var maps = lines.Skip(1).GetMaps();
+        var maps = lines.Skip(1).GetMapsWithRanges();
 
-        return GetLowestLocationForSeedsWithRanges(seeds.ToArray(), maps);
+        return GetLowestLocationForSeeds(seeds, maps);
     }
 
-    /// <summary>
-    ///     Creates ranges based on provided seed numbers.
-    /// </summary>
-    /// <param name="seeds">The seeds.</param>
-    /// <returns></returns>
-    private List<(double from, double to)> CreateRanges(double[] seeds)
+    private long GetLowestLocationForSeeds(HashSet<long> seeds, List<List<MapWithRange>> maps)
     {
-        var ranges = new List<(double from, double to)>();
+        var ranges = CreateRanges(seeds.ToArray());
+        var locations = CalculateSeedLocation(ranges, maps);
+
+        return GetMin(locations);
+    }
+
+    private List<Range> CreateRanges(long[] seeds)
+    {
+        var ranges = new List<Range>();
 
         // Create tuple ranges based on seed numbers
-        for (var i = 0; i < seeds.Length; i += 2) ranges.Add((from: seeds[i], to: seeds[i] + seeds[i + 1] - 1));
+        for (var i = 0; i < seeds.Length; i += 2) ranges.Add(new Range(seeds[i], seeds[i] + seeds[i + 1] - 1));
 
         // Return the list of tuple ranges
         return ranges;
     }
 
     /// <summary>
-    ///     Finds the lowest location number for given seeds with ranges using provided mappings.
+    ///     Function to get the lowest location for a collection of seeds with maps containing ranges
     /// </summary>
-    /// <param name="seeds">The seeds.</param>
-    /// <param name="maps">The maps.</param>
+    /// <param name="ranges">The ranges.</param>
+    /// <param name="maps">The garden map groups.</param>
     /// <returns></returns>
-    private double GetLowestLocationForSeedsWithRanges(double[] seeds,
-        Dictionary<string, List<(double from, double to, double adjustment)>> maps)
+    private List<Range> CalculateSeedLocation(List<Range> ranges, List<List<MapWithRange>> maps)
     {
-        // Create ranges based on seed numbers
-        var ranges = CreateRanges(seeds);
-
-        // Loop through each mapping
         foreach (var map in maps)
         {
-            var orderedMap = map.Value.OrderBy(x => x.from).ToArray();
-            var newRanges = new List<(double from, double to)>();
+            // Reset transformed flag for ranges
+            ResetTransformed(ranges);
 
-            // Loop through each seed range
-            foreach (var range in ranges)
-            {
-                var modifiedRange = range;
-
-                // Loop through each mapping in order
-                foreach (var mapping in orderedMap)
-                {
-                    // Modify the seed range based on the mapping adjustments
-                    if (modifiedRange.from < mapping.from)
-                    {
-                        newRanges.Add((modifiedRange.from,
-                            Math.Min(modifiedRange.to, mapping.from - 1)));
-
-                        modifiedRange.from = mapping.from;
-
-                        if (modifiedRange.from > modifiedRange.to)
-                            break;
-                    }
-
-                    if (modifiedRange.from <= mapping.to)
-                    {
-                        newRanges.Add((modifiedRange.from + mapping.adjustment,
-                            Math.Min(modifiedRange.to, mapping.to) + mapping.adjustment));
-
-                        modifiedRange.from = mapping.to + 1;
-
-                        if (modifiedRange.from > modifiedRange.to)
-                            break;
-                    }
-                }
-
-                if (modifiedRange.from <= modifiedRange.to) newRanges.Add(modifiedRange);
-            }
-
-            // Update the seed ranges with the modified ranges
-            ranges = newRanges;
+            // Apply transformations to the ranges based on map rules
+            ranges = CalculateMapTransform(ranges, map);
         }
 
-        // Return the lowest location number found in modified ranges
-        return ranges.Min(r => r.from);
+        return ranges;
+    }
+
+    /// <summary>
+    ///     Function to reset the IsTransformed flag for ranges
+    /// </summary>
+    /// <param name="ranges">The ranges.</param>
+    private void ResetTransformed(List<Range> ranges)
+    {
+        foreach (var range in ranges) range.IsTransformed = false;
+    }
+
+    /// <summary>
+    ///     Function to apply transformations to the ranges based on map rules
+    /// </summary>
+    /// <param name="ranges">The ranges.</param>
+    /// <param name="maps">The garden map group.</param>
+    /// <returns></returns>
+    private List<Range> CalculateMapTransform(List<Range> ranges, List<MapWithRange> maps)
+    {
+        foreach (var map in maps)
+            // Apply map transformations to the ranges
+            ranges = ranges.SelectMany(map.TransformRange).ToList();
+
+        return ranges;
+    }
+
+    /// <summary>
+    ///     Function to get the minimum start value among ranges
+    /// </summary>
+    /// <param name="ranges">The ranges.</param>
+    /// <returns></returns>
+    private long GetMin(List<Range> ranges)
+    {
+        var min = long.MaxValue;
+
+        foreach (var range in ranges)
+            // Find the minimum start value among the ranges
+            min = Math.Min(min, range.Start);
+
+        return min;
     }
 }

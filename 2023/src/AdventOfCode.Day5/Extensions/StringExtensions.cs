@@ -7,42 +7,66 @@ internal static class StringExtensions
     /// </summary>
     /// <param name="line">The line.</param>
     /// <returns></returns>
-    public static HashSet<double> GetSeeds(this string line)
+    public static HashSet<long> GetSeeds(this string line)
     {
         // Skip the first element and parse the remaining elements as double values
-        return new HashSet<double>(line.Split(' ').Skip(1).Select(double.Parse));
+        return new HashSet<long>(line.Split(' ').Skip(1).Select(long.Parse));
     }
 
     /// <summary>
-    ///     Processes lines to extract mappings in the format of dictionary.
+    ///     Processes lines to extract mappings.
     /// </summary>
     /// <param name="lines">The lines.</param>
     /// <returns></returns>
-    public static Dictionary<string, List<(double from, double to, double adjustment)>> GetMaps(
-        this IEnumerable<string> lines)
+    public static List<List<Map>> GetMaps(this IEnumerable<string> lines)
     {
-        // Dictionary to store mappings with map types as keys
-        Dictionary<string, List<(double from, double to, double adjustment)>> maps = new();
-        List<(double from, double to, double adjustment)> currentMap = new();
+        List<List<Map>> maps = new();
+        List<Map> currentMaps = new();
 
         foreach (var line in lines)
         {
-            // Skip empty or whitespace lines
-            if (string.IsNullOrWhiteSpace(line)) continue;
+            if (string.IsNullOrEmpty(line))
+            {
+                maps.Add(currentMaps);
+                currentMaps = new List<Map>();
+                continue;
+            }
 
-            if (line.Contains("map"))
-            {
-                // If line contains "map", create a new list for current map type
-                currentMap = new List<(double, double, double)>();
-                maps[line] = currentMap;
-            }
-            else if (currentMap != null)
-            {
-                // Parse the values in the line to create a tuple representing a mapping range and adjustment
-                var values = line.Split(' ').Select(double.Parse).ToArray();
-                currentMap!.Add((values[1], values[1] + values[2] - 1, values[0] - values[1]));
-            }
+            if (line.EndsWith(':')) continue;
+
+            currentMaps.Add(new Map(line));
         }
+
+        if (currentMaps.Any()) maps.Add(currentMaps);
+
+        return maps;
+    }
+
+    /// <summary>
+    ///     Processes lines to extract mappings.
+    /// </summary>
+    /// <param name="lines">The lines.</param>
+    /// <returns></returns>
+    public static List<List<MapWithRange>> GetMapsWithRanges(this IEnumerable<string> lines)
+    {
+        List<List<MapWithRange>> maps = new();
+        List<MapWithRange> currentMaps = new();
+
+        foreach (var line in lines)
+        {
+            if (string.IsNullOrEmpty(line))
+            {
+                maps.Add(currentMaps);
+                currentMaps = new List<MapWithRange>();
+                continue;
+            }
+
+            if (line.EndsWith(':')) continue;
+
+            currentMaps.Add(new MapWithRange(line));
+        }
+
+        if (currentMaps.Any()) maps.Add(currentMaps);
 
         return maps;
     }
