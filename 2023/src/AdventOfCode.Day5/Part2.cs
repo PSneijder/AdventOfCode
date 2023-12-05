@@ -17,17 +17,22 @@ internal sealed class Part2
         var ranges = CreateRanges(seeds.ToArray());
         var locations = CalculateSeedLocation(ranges, maps);
 
-        return GetMin(locations);
+        return locations.Min(range => range.Start);
     }
 
+    /// <summary>
+    ///     Creates ranges based on seed values.
+    /// </summary>
+    /// <param name="seeds">The seeds.</param>
+    /// <returns></returns>
     private List<Range> CreateRanges(long[] seeds)
     {
         var ranges = new List<Range>();
 
-        // Create tuple ranges based on seed numbers
+        // Create a Range object using the current seed as the start and length as the end.
+        // Subtract 1 from the length to create the correct range.
         for (var i = 0; i < seeds.Length; i += 2) ranges.Add(new Range(seeds[i], seeds[i] + seeds[i + 1] - 1));
 
-        // Return the list of tuple ranges
         return ranges;
     }
 
@@ -73,21 +78,5 @@ internal sealed class Part2
             ranges = ranges.SelectMany(map.TransformRange).ToList();
 
         return ranges;
-    }
-
-    /// <summary>
-    ///     Function to get the minimum start value among ranges
-    /// </summary>
-    /// <param name="ranges">The ranges.</param>
-    /// <returns></returns>
-    private long GetMin(List<Range> ranges)
-    {
-        var min = long.MaxValue;
-
-        foreach (var range in ranges)
-            // Find the minimum start value among the ranges
-            min = Math.Min(min, range.Start);
-
-        return min;
     }
 }
