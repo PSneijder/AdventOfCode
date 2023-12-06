@@ -1,6 +1,6 @@
 ﻿using AdventOfCode.Common;
 using AdventOfCode.Common.Extensions;
-using AdventOfCode.Day5.Extensions;
+using AdventOfCode.Day6.Extensions;
 using AdventOfCode.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,7 +42,8 @@ internal class Program
         // services.UsePuzzleFromDay2();
         // services.UsePuzzleFromDay3();
         // services.UsePuzzleFromDay4();
-        services.UsePuzzleFromDay5();
+        // services.UsePuzzleFromDay5();
+        services.UsePuzzleFromDay6();
 
         var serviceProvider = services.BuildServiceProvider();
 
